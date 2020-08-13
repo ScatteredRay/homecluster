@@ -1,0 +1,1 @@
+docker $env:DOCKER_HOST_PARAMS build .
