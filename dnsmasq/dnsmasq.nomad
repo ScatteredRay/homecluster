@@ -34,7 +34,7 @@ job "dnsmasq" {
 
             config {
                 command = "/usr/bin/avahi-publish"
-                args = ["-f", "-v", "-s", "DNS service", "_dns._tcp", "53"]
+                args = ["-v", "-s", "DNS service", "_dns._tcp", "53"]
 
             }
         }
