@@ -1,6 +1,12 @@
 const fetch = require('node-fetch');
 const twilio = require('twilio');
+const Bottleneck = require("bottleneck");
 const {config} = require('./config');
+
+const limiter = new Bottleneck({
+    maxConcurrent: 1,
+    minTime: 200
+});
 
 let twilioAccountSid = config.twilioAccountSid;
 let twilioAuthToken = config.twilioAuthToken;
@@ -125,14 +131,21 @@ function pm10ToAQI(pm) {
     return pmToAQI(pm, pm10Map);
 }
 
+function limitFetch(url) {
+    return limiter.schedule(() => fetch(url));
+}
+
 function update() {
-    let fetches = [];
-    for(url of urls) {
-        fetches.push(fetch(url));
-    }
-    Promise.all(urls.map((url) => fetch(url)))
+    Promise.all(urls.map((url) => limitFetch(url)))
         .then((reses) => {
-            return Promise.all(reses.map((res) => res.json()))
+            return Promise.all(reses.map((res) => {
+                if(res.ok) {
+                    return res.json();
+                }
+                else {
+                    return res.text().then((text) => Promise.reject(new Error(text)));
+                }
+            }));
         })
         .then((datas) => {
             let aqis = [];
@@ -143,8 +156,7 @@ function update() {
                     let aqi10 = pm10ToAQI(result.pm10_0_atm);
                     let aqi = Math.max(aqi2_5, aqi10);
                     aqis.push(aqi);
-                    //console.log(result);
-                    console.log(`aqi: ${aqi} aqi(2.5): ${aqi2_5}, aqi(10): ${aqi10}`);
+                    console.info(`aqi: ${aqi} aqi(2.5): ${aqi2_5}, aqi(10): ${aqi10}`);
                 }
             }
 
@@ -154,7 +166,7 @@ function update() {
         })
         .catch((err) => {
             // Log the error and we'll try again later.
-            console.log(err);
+            console.error(err);
         });
 }
 
@@ -175,6 +187,7 @@ function updateAQI(aqiMin, aqiMax) {
     }
 
     if(bHighAQIState != bNewHighAQIState) {
+        console.info(`SendMessage: ${aqiMax} ${bHighAQIState} -> ${bNewHighAQIState}`);
         bHighAQIState = bNewHighAQIState;
         let change = bHighAQIState ? "raised" : "lowered"
         sendMessage(`AQI(${aqiMax}) Update! AQI ${change} to ${aqiMin}-${aqiMax}`);
@@ -189,9 +202,8 @@ function sendMessage(msg) {
             from: twilioPhoneNumber
         })
     }))
-        .then((messages) => console.log(messages));
+        .then((messages) => console.info("Sent: ", msg));
 }
 
 let cron = require('node-cron');
 cron.schedule(schedule, update)
-

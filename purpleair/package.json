@@ -9,6 +9,7 @@
   "author": "Indy Ray",
   "license": "MIT",
   "dependencies": {
+    "bottleneck": "^2.19.5",
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.0",
     "twilio": "^3.49.0"
