@@ -1,0 +1,16 @@
+{
+  "name": "purpleair",
+  "version": "1.0.0",
+  "description": "",
+  "main": "purpleair.js",
+  "scripts": {
+    "test": "node purpleair.js"
+  },
+  "author": "Indy Ray",
+  "license": "MIT",
+  "dependencies": {
+    "node-cron": "^2.0.3",
+    "node-fetch": "^2.6.0",
+    "twilio": "^3.49.0"
+  }
+}
