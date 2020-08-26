@@ -10,6 +10,10 @@ job "purpleair" {
 
                config {
                       image = "scatteredray/purpleair:latest"
+
+                      volumes = [
+                          "app/config.js:/app/config.js"
+                      ]
                }
 
                template {
@@ -33,7 +37,7 @@ exports.config = {
     schedule: "*/2 * * * *"
 };
 EOH
-                      destination = "/app/config.js"
+                      destination = "app/config.js"
                }
           }
     }
