@@ -28,7 +28,8 @@ exports.config = {
         "https://www.purpleair.com/json?show=19657" //Western SoMa (Outside)
     ],
     phoneNumbers: [
-        "{{key "personal/nd/phone"}}"
+        "{{key "personal/nd/phone"}}",
+        "{{key "personal/rb/phone"}}"
     ],
 
     lowAQI: 25,
