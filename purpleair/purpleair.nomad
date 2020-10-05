@@ -32,9 +32,8 @@ exports.config = {
         "{{key "personal/rb/phone"}}"
     ],
 
-    lowAQI: 25,
-    highAQI: 35,
-
+    lowAQI: {{key "purpleair/aqi/low"}},
+    highAQI: {{key "purpleair/aqi/high"}},
     schedule: "*/2 * * * *"
 };
 EOH
