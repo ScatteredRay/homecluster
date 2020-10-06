@@ -1,6 +1,10 @@
 job "homeddns" {
     datacenters = ["dc1"]
-    type = "service"
+    type = "batch"
+
+    periodic {
+        cron = "@hourly"
+    }
 
     group "dns" {
         count = 1
