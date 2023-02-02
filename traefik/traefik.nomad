@@ -5,18 +5,22 @@ job "traefik" {
   group "traefik" {
     count = 1
 
+    network {
+      port "http" {
+        static = 80
+      }
+      port "https" {
+        static = 443
+      }
+      port "api" {
+        static = 8081
+      }
+    }
+
     task "traefik" {
       driver = "docker"
 
       resources {
-        network {
-          port "http" {
-            static = 80
-          }
-          port "api" {
-            static = 8081
-          }
-        }
       }
 
       service {
@@ -46,8 +50,19 @@ job "traefik" {
 [entryPoints]
     [entryPoints.http]
     address = ":{{env "NOMAD_PORT_http"}}"
+    [entryPoints.https]
+    address = ":{{env "NOMAD_PORT_https"}}"
     [entryPoints.traefik]
     address = ":{{env "NOMAD_PORT_api"}}"
+
+[certificateResolvers.le.acme]
+    email = "arelius@gmail.com"
+    storage = "acme.json"
+    caServer = "https://acme-v02.api.letsencrypt.org/directory"
+    #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+    [certificateResolvers.le.acme.dnsChallenge]
+    provider = "route53"
+
 
 [api]
     dashboard = true
@@ -60,8 +75,21 @@ job "traefik" {
     [providers.consulCatalog.endpoint]
     address = "127.0.0.1:8500"
     scheme = "http"
+
 EOF
         destination = "local/traefik.toml"
+      }
+
+      template {
+        data = <<EOH
+AWS_ACCESS_KEY_ID={{key "dnsmasq/aws/access_key"}}
+AWS_SECRET_ACCESS_KEY={{key "dnsmasq/aws/secret_key"}}
+AWS_REGION=us-west-1
+AWS_HOSTED_ZONE_ID=Z32ZTTO2MKJRE3
+EOH
+
+        destination = "secrets/file.env"
+        env = true
       }
     }
 
@@ -78,7 +106,7 @@ EOF
                 "TTL" : 30,
                 "ResourceRecords" : [
                     {
-                        "Value" : "{{ env "NOMAD_IP_traefik_http" }}"
+                        "Value" : "{{ env "NOMAD_IP_http" }}"
                     }
                 ]
             }
