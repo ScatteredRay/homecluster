@@ -5,6 +5,13 @@ job "dnsmasq" {
     group "dns" {
         count = 1
 
+        network {
+          port "dns" {
+            static = 53
+            to = 53
+          }
+        }
+
         task "dnsmasq" {
             driver = "docker"
             config {
@@ -13,12 +20,6 @@ job "dnsmasq" {
            }
 
             resources {
-                network {
-                    port "dns" {
-                        static = 53
-                        to = 53
-                    }
-                }
             }
 
            service {
@@ -42,7 +43,7 @@ job "dnsmasq" {
                 "TTL" : 30,
                 "ResourceRecords" : [
                     {
-                        "Value" : "{{env "NOMAD_IP_dnsmasq_dns"}}"
+                        "Value" : "{{env "NOMAD_IP_dns"}}"
                     }
                 ]
             }
@@ -80,15 +81,15 @@ EOH
             }
         }
 
-        task "avahi" {
-            driver = "raw_exec"
+        # task "avahi" {
+        #     driver = "raw_exec"
 
-            config {
-                command = "/usr/bin/avahi-publish"
-                args = ["-v", "-s", "DNS service", "_dns._tcp", "53"]
+        #     config {
+        #         command = "/usr/bin/avahi-publish"
+        #         args = ["-v", "-s", "DNS service", "_dns._tcp", "53"]
 
-            }
-        }
+        #     }
+        # }
     }
 }
 
