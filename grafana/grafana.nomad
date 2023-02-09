@@ -7,7 +7,17 @@ job "grafana" {
 
     network {
       mode = "host"
-      port "grafana" {}
+      port "http" {}
+    }
+
+    service {
+      name = "grafana"
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.grafana.rule=PathPrefix(\"/grafana\")",
+        "traefik.http.routers.grafana.service=grafana@consulcatalog"
+      ]
     }
 
     task "grafana" {
@@ -24,7 +34,7 @@ job "grafana" {
           "--config", "/config/grafana-config.ini"
         ]
 
-        ports = ["grafana"]
+        ports = ["http"]
 
         mount {
           type = "bind"
@@ -64,7 +74,9 @@ job "grafana" {
       template {
         data = <<EOF
 [server]
-http_port = {{env "NOMAD_PORT_grafana"}}
+http_port = {{env "NOMAD_PORT_http"}}
+root_url = /grafana
+serve_from_sub_path = true
 
 [auth.anonymous]
 enabled = true
@@ -109,8 +121,13 @@ EOF
     service {
       name = "loki"
       address_mode = "host"
-      tags = ["loki"]
       port = "http"
+      tags = [
+        "loki",
+        "traefik.enable=true",
+        "traefik.http.routers.loki.rule=PathPrefix(\"/loki\")",
+        "traefik.http.routers.loki.service=loki@consulcatalog"
+      ]
     }
 
     task "loki" {
