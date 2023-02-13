@@ -9,19 +9,6 @@ job "consuldns" {
   group "updatedns" {
     count = 1
 
-    task "noop" {
-      driver = "docker"
-
-      config {
-        image = "alpine:3.17.2"
-        command = "/bin/ash"
-        args = [
-          "-c",
-          "while true; do sleep 3600; done"
-        ]
-      }
-    }
-
     task "updatedns" {
       template {
         data = <<EOF
@@ -64,17 +51,11 @@ EOF
         env = true
       }
 
-      lifecycle {
-        hook = "prestart"
-        sidecar = false
-      }
-
       driver = "docker"
       config {
         image = "scatteredray/aws-cli:arm"
         entrypoint = ["/bin/sh"]
-        args = ["-c", "apk --no-cache add curl sed && sed -i s/__DNS_ADDRESS__/$(curl -sf http://checkip.amazonaws.com/)/g recordupdate.json && aws route53 change-resource-record-sets --hosted-zone-id Z32ZTTO2MKJRE3 --change-batch file://recordupdate.json"]
-
+        args = ["-c", "apk --no-cache add curl sed  && aws route53 change-resource-record-sets --hosted-zone-id Z32ZTTO2MKJRE3 --change-batch file://recordupdate.json && while true; do sleep 3600; done"]
         volumes = [
           "aws:/aws"
         ]
