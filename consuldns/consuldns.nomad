@@ -31,6 +31,19 @@ job "consuldns" {
                     }
                 ]
             }
+        },
+        {
+            "Action" : "UPSERT",
+            "ResourceRecordSet" : {
+                "Name" : "{{.Name}}.services.home.nd.gl.",
+                "Type" : "SRV",
+                "TTL" : 30,
+                "ResourceRecords" : [
+                    {
+                        "Value" : "10 5 {{.Port}} {{.Name}}.services.home.nd.gl"
+                    }
+                ]
+            }
         }{{end -}}
 {{end}}{{end -}}
     ]
