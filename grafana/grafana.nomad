@@ -14,8 +14,10 @@ job "grafana" {
       name = "grafana"
       port = "http"
       tags = [
+        "dns-entry",
         "traefik.enable=true",
         "traefik.http.routers.grafana.rule=PathPrefix(\"/grafana\")",
+
         "traefik.http.routers.grafana.service=grafana@consulcatalog"
       ]
     }
@@ -123,7 +125,7 @@ EOF
       address_mode = "host"
       port = "http"
       tags = [
-        "loki",
+        "dns-entry",
         "traefik.enable=true",
         "traefik.http.routers.loki.rule=PathPrefix(\"/loki\")",
         "traefik.http.routers.loki.service=loki@consulcatalog"

@@ -27,6 +27,10 @@ job "traefik" {
         name = "traefik"
         port = "http"
 
+        tags = [
+          "dns-entry"
+        ]
+
         check {
           name = "alive"
           type = "tcp"
