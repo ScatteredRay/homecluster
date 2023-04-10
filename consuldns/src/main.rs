@@ -1,9 +1,9 @@
 use reqwest::Client;
 use serde::Deserialize;
-use rusoto_core::{Region, RusotoError};
-use rusoto_route53::{Change, ChangeBatch, ChangeResourceRecordSetsRequest, ListResourceRecordSetsRequest, ResourceRecord, ResourceRecordSet, Route53, Route53Client};
+use rusoto_core::{Region};
+use rusoto_route53::{Change, ChangeBatch, ChangeResourceRecordSetsRequest, ResourceRecord, ResourceRecordSet, Route53Client};
 use std::collections::HashMap;
-use std::str::FromStr;
+
 use std::fs;
 
 // Add Config struct
@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let domain = &config.domain;
 
     let client = Client::new();
-    let route53_client = Route53Client::new(Region::default());
+    let _route53_client = Route53Client::new(Region::default());
 
     // Fetch services from Consul
     let services: HashMap<String, Vec<String>> = client
@@ -62,7 +62,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     comment: None,
                 };
 
-                let change_request = ChangeResourceRecordSetsRequest {
+                let _change_request = ChangeResourceRecordSetsRequest {
                     hosted_zone_id: zone_id.to_string(),
                     change_batch,
                 };
