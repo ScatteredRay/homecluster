@@ -17,23 +17,23 @@ job "purpleair" {
                }
 
                template {
-                      data = <<EOH
+                 data = <<EOH
 exports.config = {
     twilioAccountSid: "{{key "twilio/account_sid"}}",
     twilioAuthToken: "{{key "twilio/auth_token"}}",
     twilioPhoneNumber: "{{key "twilio/default/phone"}}",
 
     urls: [
-        "https://www.purpleair.com/json?show=2910", //tactrix rooftop
-        "https://www.purpleair.com/json?show=19657" //Western SoMa (Outside)
+        "https://www.purpleair.com/json?show=37715", //Pine
+        "https://www.purpleair.com/json?show=74241" //Levy
     ],
     phoneNumbers: [
         "{{key "personal/nd/phone"}}",
-        "{{key "personal/rb/phone"}}"
     ],
 
-    lowAQI: {{key "purpleair/aqi/low"}},
-    highAQI: {{key "purpleair/aqi/high"}},
+    lowAQI: 25,
+    highAQI: 35,
+
     schedule: "*/2 * * * *"
 };
 EOH

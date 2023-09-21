@@ -4,12 +4,11 @@ exports.config = {
     twilioPhoneNumber: "{{key "twilio/default/phone"}}",
 
     urls: [
-        "https://www.purpleair.com/json?show=2910", //tactrix rooftop
-        "https://www.purpleair.com/json?show=19657" //Western SoMa (Outside)
+        "https://www.purpleair.com/json?show=37715", //Pine
+        "https://www.purpleair.com/json?show=74241" //Levy
     ],
     phoneNumbers: [
         "{{key "personal/nd/phone"}}",
-        "{{key "personal/rb/phone"}}"
     ],
 
     lowAQI: 25,
