@@ -1,0 +1,3 @@
+$env:NOMAD_ADDR = "http://10.101.11.200:4646"
+$env:CONSUL_HTTP_ADDR = "10.101.11.200:8500"
+$env:DOCKER_HOST_PARAMS = "-H ssh://nd@10.101.11.200"
