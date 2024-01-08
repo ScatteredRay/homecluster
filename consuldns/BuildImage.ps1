@@ -20,7 +20,7 @@ cargo install --root $cargodir nickel-lang
 $ts = Get-Date -Format "yyyyMMddhhmmss"
 $srcFile = "source.${ts}.zip"
 $Archive = (Join-Path $builddir $srcFile)
-Compress-Archive -Path @("Cargo.toml", "Cargo.lock", "src") -DestinationPath $Archive -Force
+Compress-Archive -Path @("build.nix", "Cargo.toml", "Cargo.lock", "src") -DestinationPath $Archive -Force
 Invoke-RestMethod -Uri "http://objectstore.home.nd.gl/artifacts/consuldns/$srcFile" -Method Put -InFile $Archive -UseDefaultCredentials
 
 $buildimagencl = (Join-Path $PSScriptRoot "buildimage.ncl")

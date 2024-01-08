@@ -21,7 +21,7 @@ fun srcFile => {
               mount = {
                 type = "bind",
                 source = "local/consuldns",
-                target = "/mnt/consuldns
+                target = "/mnt/consuldns"
               }
             },
             artifact = {
